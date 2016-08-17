@@ -1,0 +1,32 @@
+#!/bin/bash
+
+help='nyaa "quality"($1) "anime"($2)\n-s : search anime (ex: -s 720p "sword art online")\n-h : print this help\nHorriblesubs releases only'
+
+if [ "${1}" = "-s" -a "${#}" -eq 3 ]; then
+	rsstail -lN1 -u "http://www.nyaa.se/?user=64513&page=rss&term=${3}+${2}+-batch" | tac | sed -n '2~2p'
+
+elif [ "${1}" = "-h" -o "${#}" -ne 2 ]; then
+    printf "%s\n" "${help}"
+
+else
+
+	rss="$(rsstail -lN1 -u "http://www.nyaa.se/?user=64513&page=rss&term=${2}+${1}+-batch" | tac)"
+	list="$(sed -n '2~2p' <<< "${rss}")"
+	dl="$(sed -n '1~2p' <<< "${rss}")"
+
+	dir="${HOME}/Manga/${2}"
+
+	if [ -e "${dir}" ]; then
+		printf "%s\n" "${2} already exists"
+	else
+		mkdir "${dir}"
+	fi
+
+	cd "${dir}" || exit 1
+	while read line
+	do
+		aria2c "${line}"
+	done <<< "${dl}"
+
+fi
+
