@@ -3,4 +3,4 @@
 This script creates a PKGBUILD for youtube-dl.
 you'll need python(3) and python-setuptools.
 
-# Don't forget to modify the directory in the script.
+# Don't forget to modify the directory variable dir= in the script.
