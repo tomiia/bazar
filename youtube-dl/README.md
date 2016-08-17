@@ -1,6 +1,6 @@
-# Youtube-dl PKGBUILD script.
+# Youtube-dl PKGBUILD (for Archlinux) script.
 
-This script creates a PKGBUILD (Archlinux) for youtube-dl.
+This script creates a PKGBUILD for youtube-dl.
 you'll need python(3) and python-setuptools.
 
 # Don't forget to modify the directory in the script.
