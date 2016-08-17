@@ -4,7 +4,7 @@ ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1
 exitcode="$?"
 
 if [ "${exitcode}" -ne 0 ]; then
-    printf "%s\n" "Connection error (ping -c 2 youtube-dl.org gave exit code ${exitcode})"
+    printf "%s\n" "Connection error (ping -W 1 -c 1 www.youtube-dl.org gave exit code ${exitcode})"
     exit 1
 fi
 
