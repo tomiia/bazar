@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/dash
 
-ping -c 2 youtube-dl.org > /dev/null 2>&1
+ping -W 1 -c 1 www.youtube-dl.org &> /dev/null
 exitcode="$?"
 
 if [ "${exitcode}" -ne 0 ]; then
@@ -23,7 +23,7 @@ if [ "${localver}" != "${ver}" ]; then
 
     tput reset
     
-    printf "\n%s\n\n" "MAJ youtube-dl:"
+    printf "\n%s\n\n" "youtube-dl build:"
 
     cat <<TEXT > "${dir}/PKGBUILD"
 pkgbase=('youtube-dl')
