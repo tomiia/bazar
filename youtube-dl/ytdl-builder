@@ -1,6 +1,6 @@
 #!/bin/dash
 
-ping -W 1 -c 1 www.youtube-dl.org &> /dev/null
+ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1
 exitcode="$?"
 
 if [ "${exitcode}" -ne 0 ]; then
