@@ -1,31 +1,25 @@
 #!/bin/dash
 
-ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1
-exitcode="$?"
+if ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1; then
 
-if [ "${exitcode}" -ne 0 ]; then
-    printf "%s\n" "Connection error (ping -W 1 -c 1 www.youtube-dl.org gave exit code ${exitcode})"
-    exit 1
-fi
+    localver="$(pacman -Q youtube-dl 2> /dev/null | grep -o "[0-9.]*" | head -n1)"
+    ver="$(curl -s http://youtube-dl.org/latest/version)"
+    sha512="$(curl -sL http://youtube-dl.org/latest/SHA2-512SUMS | sed -n '3p' | awk '{print $1}')"
+    dir="${HOME}/Aur/youtube-dl/"
 
-localver="$(pacman -Q youtube-dl 2> /dev/null | grep -o "[0-9.]*" | head -n1)"
-ver="$(curl -s http://youtube-dl.org/latest/version)"
-sha512="$(curl -sL http://youtube-dl.org/latest/SHA2-512SUMS | sed -n '3p' | awk '{print $1}')"
-dir="${HOME}/Aur/youtube-dl/"
+    if [ "${localver}" != "${ver}" ]; then
 
-if [ "${localver}" != "${ver}" ]; then
+        if [ ! -d "${dir}" ]; then
+            mkdir -p "${dir}" || exit 1
+        else
+            cd "${dir}" || exit 1
+        fi
 
-    if [ ! -d "${dir}" ]; then
-        mkdir -p "${dir}" || exit 1
-    else
-        cd "${dir}" || exit 1
-    fi
-
-    tput reset
+        tput reset
     
-    printf "\n%s\n\n" "youtube-dl build:"
+        printf "\n%s\n\n" "youtube-dl build:"
 
-    cat <<TEXT > "${dir}/PKGBUILD"
+        cat <<TEXT > "${dir}/PKGBUILD"
 pkgbase=('youtube-dl')
 pkgname=('youtube-dl')
 pkgver="${ver}"
@@ -59,17 +53,15 @@ package() {
 
 TEXT
 
-    if [ ! -d "${dir}" ]; then
-        mkdir -p "${dir}" || exit 1
-    else
-        cd "${dir}" || exit 1
-    fi
-
     makepkg -sic --noconfirm
     rm -rf youtube-dl-[0-9.]*.tar.gz*
 
-elif [ "${localver}" = "${ver}" ]; then
+    elif [ "${localver}" = "${ver}" ]; then
+        printf "%s\n" "Latest version already installed ("${ver}")"
+    fi
 
-    printf "%s\n" "Latest version already installed ("${ver}")"
-
+else
+    printf "%s\n" "Connection error"
+    exit 1
 fi
+
