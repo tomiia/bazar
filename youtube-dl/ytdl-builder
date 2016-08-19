@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/sh
 
 if ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1; then
 
