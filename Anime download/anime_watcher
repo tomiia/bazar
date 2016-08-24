@@ -1,0 +1,26 @@
+#!/bin/bash
+filter="${HOME}/Manga/.filter"
+
+clear
+
+rsstail -PlHNn 30 -u 'http://www.nyaa.se/?page=rss&cats=1_37&user=64513&term=720p+-batch' 2>/dev/null | \
+while read -r anime; do
+    read -r url
+    if grep -qf "${filter}" <<< ${anime}; then
+        name="$(sed -r 's/[^ ]+ (.*) - [^-]+/\1/' <<< ${anime})"
+        ep=$(sed -r 's/.* - ([^ ]+) [^-]+/\1/' <<< ${anime})
+
+        dir="${HOME}/Manga/${name}"
+
+        printf "\n%s\n\n" "Downloading \"${name}\" episode ${ep} :"
+
+        if aria2c --quiet=true --always-resume=true --allow-overwrite=false --dir="${dir}" "${url}"; then
+            printf "%s\n\n" "\"${name}\" episode ${ep} downloaded"
+
+        else
+            printf "%s\n\n" "Error with download of \"${name}\" episode ${ep} (file already exist, any connection error, interruption, no disk space left, etc)"
+
+        fi
+    fi
+done
+
