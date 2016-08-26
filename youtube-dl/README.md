@@ -1,6 +1,6 @@
 # Youtube-dl PKGBUILD (for Archlinux) script.
 
-This script creates a PKGBUILD for youtube-dl and then build it.
+Those scripts creates a PKGBUILD for youtube-dl and then build it. v2 version can use a .hold file to block youtube-dl updates
 
 You'll need python(3) and python-setuptools.
 
