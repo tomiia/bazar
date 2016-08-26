@@ -1,0 +1,82 @@
+#!/bin/dash
+
+dir="${HOME}/Aur/youtube-dl/"
+
+if [ ! -d "${dir}" ]; then
+    mkdir -p "${dir}" || exit 1
+fi
+
+holdfile="${dir}.hold"
+
+if [ ! -e "${holdfile}" ]; then
+    touch "${holdfile}"
+fi
+
+holdver="$(grep . "${holdfile}")"
+
+if ping -W 1 -c 1 www.youtube-dl.org > /dev/null 2>&1;then
+
+    localver="$(pacman -Q youtube-dl 2> /dev/null | grep -o "[0-9.]*" | head -n1)"
+    ver="$(curl -s http://youtube-dl.org/latest/version)"
+    sha512="$(curl -sL http://youtube-dl.org/latest/SHA2-512SUMS | sed -n '3p' | awk '{print $1}')"
+
+    if [ -n "${localver}" -a -e ${holdfile} -a "${localver}" = "${holdver}" -a "${localver}" != "${ver}" ]; then
+        printf "%s\n" "Holding youtube-dl ${holdver} (youtube-dl ${ver} available)"
+        exit
+    elif [ -n "${localver}" -a -e ${holdfile} -a "${localver}" = "${holdver}" -a "${localver}" = "${ver}" ]; then
+        printf "%s\n" "Holding youtube-dl ${holdver} (no update available)"
+        exit
+    fi
+
+    if [ "${localver}" != "${ver}" ]; then
+
+        cd "${dir}" || exit 1
+        tput reset
+        printf "\n%s\n\n" "youtube-dl build:"
+
+        cat <<TEXT > "${dir}/PKGBUILD"
+pkgbase=('youtube-dl')
+pkgname=('youtube-dl')
+pkgver="${ver}"
+pkgrel=1
+pkgdesc='YouTube video downloader'
+url='https://github.com/rg3/youtube-dl'
+depends=('python')
+makedepends=('python-setuptools')
+optdepends=('ffmpeg: for video post-processing'
+            'rtmpdump: for rtmp streams support'
+            'atomicparsley: for embedding thumbnails into m4a files')
+license=('custom:Public Domain')
+arch=('any')
+source=("https://yt-dl.org/downloads/\${pkgver}/youtube-dl-\${pkgver}.tar.gz"
+        "https://yt-dl.org/downloads/\${pkgver}/youtube-dl-\${pkgver}.tar.gz.sig")
+validpgpkeys=('7D33D762FD6C35130481347FDB4B54CBA4826A18'
+              'ED7F5BF46B3BBED81C87368E2C393E0F18A9236D')
+sha512sums=("${sha512}"
+            'SKIP')
+	
+build() {
+    cd "\${srcdir}/\${pkgname}"
+    python setup.py build
+}
+
+package() {
+    depends+=()
+    cd "\${srcdir}/\${pkgname}"
+    python setup.py install --root="\${pkgdir}" --optimize=1 --skip-build
+}
+
+TEXT
+
+        makepkg -sic --noconfirm
+        cp youtube-dl-"${ver}"-1-any* save/
+        rm -rf youtube-dl*
+        cp save/youtube-dl-"${ver}"-1-any* .
+
+    elif [ "${localver}" = "${ver}" ]; then
+        printf "%s\n" "Latest version already installed ("${ver}")"
+    fi
+
+else
+    printf "%s\n" "Connection error"
+fi
