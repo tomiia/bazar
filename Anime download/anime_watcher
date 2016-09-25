@@ -7,12 +7,12 @@
 # it uses a filter file for anime names, full or partial name (but need to match name in rsstail, take precaution)
 # and an .error file that lists aria2c exits codes.
 #
-# Don't forget to edit for your needs
+# Don't forget to edit for your needs.
 
 folder="${HOME}/Divers/Manga"
 log="${folder}/.log"
 filter="${folder}/.filter"
-exitfile="${folder}/.aria2_exit"
+exitfile="${folder}/.aria2_exit" # exit file https://raw.githubusercontent.com/tomiia/bazar/master/Anime%20download/.aria2_exit
 
 exit_print() {
     printf "\"%s\" episode %s : $(grep "^${exitcode} .*$" "${errorfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')\n\n" "${name}" "${ep}"
@@ -42,4 +42,4 @@ while read -r anime; do
 
     fi
 
-done # > "${log}" 2>&1 # Uncomment if you want to use a log file instead
+done # > "${log}" 2>&1 # Uncomment if you want to use a log file instead.
