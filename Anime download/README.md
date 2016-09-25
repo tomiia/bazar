@@ -10,4 +10,4 @@ those scripts uses aria2 plus rsstail for anime_watcher and nyaa/nyaa2
 
 nyaa let you choose what to downloads (ex: ep 1 to 5, only ep 5, or all for all episodes) and nyaa2 downloads all episodes directly. There is also an -s argument for anime search (ex: nyaa/nyaa2 -s 720p "Flying Witch")
 
-# Don't forget to modify the directory variable dir= for those scripts.
+# Don't forget to modify the directory variable dir=/folder= and adapte whatever you want to your needs.
