@@ -1,8 +1,9 @@
 #!/bin/bash
-# tomiia's bazar https://github.com/tomiia/bazar
+# tomiia's bazar: https://github.com/tomiia/bazar
 # LICENSE: WTFPL http://www.wtfpl.net/ 
+# HorribleSubs: http://horriblesubs.info/
 #
-# This script use nyaa.se RSS feed via rsstail ( http://www.vanheusden.com/rsstail/ ),
+# This script use nyaa.se RSS feed for HorribleSubs releases via rsstail ( http://www.vanheusden.com/rsstail/ ),
 # it uses a filter file for anime names, full or partial name (but need to match name in rsstail, take precaution)
 # and an .error file that lists aria2c exits codes.
 #
