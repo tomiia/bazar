@@ -12,7 +12,7 @@
 folder="${HOME}/Divers/Manga"
 log="${folder}/.log"
 filter="${folder}/.filter"
-errorfile="${folder}/.error"
+exitfile="${folder}/.aria2_exit"
 
 exit_print() {
     printf "\"%s\" episode %s : $(grep "^${exitcode} .*$" "${errorfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')\n\n" "${name}" "${ep}"
