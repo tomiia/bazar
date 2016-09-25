@@ -27,12 +27,13 @@ while read -r anime; do
     read -r url
 
     if grep --quiet --file="${filter}" <<< ${anime}; then
+
         name="$(sed -r 's/[^ ]+ (.*) - [^-]+/\1/' <<< ${anime})"
         ep=$(sed -r 's/.* - ([^ ]+) [^-]+/\1/' <<< ${anime})
         dldir="${folder}/${name}"
         
         if [ ! -e "${dldir}" ]; then
-            mkdir -p "${dldir}" || printf "%s\n" "ERROR \"${dldir}\""
+            mkdir -p "${dldir}" || dldir="${folder}" # if an error occurs with mkdir, fallback to ${folder} dir
         fi
         
         aria2c --quiet=true --dir="${dldir}" "${url}"
