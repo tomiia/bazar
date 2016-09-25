@@ -42,4 +42,4 @@ while read -r anime; do
 
     fi
 
-done > "${log}" 2>&1
+done # > "${log}" 2>&1 # Uncomment if you want to use a log file instead
