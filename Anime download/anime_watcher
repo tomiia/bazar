@@ -30,7 +30,7 @@ while read -r anime; do
         dldir="${folder}/${name}"
         
         if [ ! -e "${dldir}" ]; then
-            mkdir -p "${dldir}" || printf "%s\n" "ERROR \"${dldir}\""
+            mkdir -p "${dldir}" || dldir="${folder}" # fallback to ${folder} when mkdir fails
         fi
         
         aria2c --quiet=true --dir="${dldir}" "${url}"
