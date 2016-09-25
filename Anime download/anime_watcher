@@ -1,26 +1,44 @@
 #!/bin/bash
-filter="${HOME}/Manga/.filter"
+# tomiia's bazar https://github.com/tomiia/bazar
+# LICENSE: WTFPL http://www.wtfpl.net/ 
+#
+# This script use nyaa.se RSS feed via rsstail ( http://www.vanheusden.com/rsstail/ ),
+# it uses a filter file for anime names, full or partial name (but need to match name in rsstail, take precaution)
+# and an .error file that lists aria2c exits codes.
+#
+# Don't forget to edit for your needs
 
-clear
+folder="${HOME}/Divers/Manga"
+log="${folder}/.log"
+filter="${folder}/.filter"
+errorfile="${folder}/.error"
 
-rsstail -PlHNn 30 -u 'http://www.nyaa.se/?page=rss&cats=1_37&user=64513&term=720p+-batch' 2>/dev/null | \
+exit_print() {
+    printf "\"%s\" episode %s : $(grep "^${exitcode} .*$" "${errorfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')\n\n" "${name}" "${ep}"
+}
+
+clear;tmux clearhist -t downloads:2.1
+
+rsstail -PlHNr -u 'http://www.nyaa.se/?page=rss&cats=1_37&user=64513&term=720p+-batch' 2>/dev/null | \
+
 while read -r anime; do
+
     read -r url
-    if grep -qf "${filter}" <<< ${anime}; then
+
+    if grep --quiet --file="${filter}" <<< ${anime}; then
         name="$(sed -r 's/[^ ]+ (.*) - [^-]+/\1/' <<< ${anime})"
         ep=$(sed -r 's/.* - ([^ ]+) [^-]+/\1/' <<< ${anime})
-
-        dir="${HOME}/Manga/${name}"
-
-        printf "\n%s\n\n" "Downloading \"${name}\" episode ${ep} :"
-
-        if aria2c --quiet=true --always-resume=true --allow-overwrite=false --dir="${dir}" "${url}"; then
-            printf "%s\n\n" "\"${name}\" episode ${ep} downloaded"
-
-        else
-            printf "%s\n\n" "Error with download of \"${name}\" episode ${ep} (file already exist, any connection error, interruption, no disk space left, etc)"
-
+        dldir="${folder}/${name}"
+        
+        if [ ! -e "${dldir}" ]; then
+            mkdir -p "${dldir}" || printf "%s\n" "ERROR \"${dldir}\""
         fi
-    fi
-done
+        
+        aria2c --quiet=true --dir="${dldir}" "${url}"
+        exitcode="$?"
 
+        exit_print
+
+    fi
+
+done > "${log}" 2>&1
