@@ -18,7 +18,7 @@ exit_print() {
     printf "\"%s\" episode %s : %s\n\n" "${name}" "${ep}" "$(grep "^$1 .*$" "${errorfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')"
 }
 
-rsstail -PlHNr -u 'http://www.nyaa.se/?page=rss&cats=1_37&user=64513&term=720p+-batch' 2>/dev/null | \
+rsstail -PlHNr -u 'http://www.nyaa.si/?page=rss&c=1_2&term=720p+-batch&u=HorribleSubs' 2>/dev/null | \
 
 while read -r anime; do
 
