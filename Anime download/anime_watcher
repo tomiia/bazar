@@ -15,7 +15,7 @@ filter="${folder}/.filter"
 exitfile="${folder}/.aria2_exit" # exit file https://raw.githubusercontent.com/tomiia/bazar/master/Anime%20download/.aria2_exit
 
 exit_print() {
-    printf "\"%s\" episode %s : %s\n\n" "${name}" "${ep}" "$(grep "^$1 .*$" "${errorfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')"
+    printf "\"%s\" episode %s : %s\n\n" "${name}" "${ep}" "$(grep "^$1 .*$" "${exitfile}" | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}')"
 }
 
 rsstail -PlHNr -u 'http://www.nyaa.si/?page=rss&c=1_2&term=720p+-batch&u=HorribleSubs' 2>/dev/null | \
